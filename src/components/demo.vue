@@ -22,6 +22,7 @@
   
   </div>
 
+ <canvas id="canvas" width='600' height='600'></canvas>
 
   <div id="hello">
   </div>
@@ -57,6 +58,15 @@ export default {
   modules: {
   },
   mounted () {
+    var can = document.getElementById('canvas');
+    var cxt = can.getContext('2d');
+    // cxt.fillStyle="#FF0000";
+    // cxt.fillRect(0,0,600,600);
+    // cxt.save();
+    // cxt.beginPath();
+    // cxt.arc(300,300,300,0,Math.PI*2,true);
+    // cxt.clip()
+    // cxt.restore();
      for (var i = 1; i < this.length; i++) {
       this.snake.push(this.num--);
     }
@@ -77,9 +87,9 @@ export default {
       forceCanvas: true,
       resolution: 1
     })
-    this.list.app.renderer.backgroundColor = 808080
+    this.list.app.renderer.backgroundColor = 16777215
     this.list.app.renderer.resize(600, 600)
-    this.list.app.view.style.border = '1px solid red'
+    this.list.app.view.style.border = '1px solid 16777215'
     this.list.app.renderer.view.style.position = 'absolute'
     this.list.app.renderer.view.style.display = 'block'
     this.list.app.renderer.view.style.left = 0
@@ -94,7 +104,7 @@ export default {
     this.list.graphics = new PIXI.Graphics()
     function table () {
       for(var i = 1; i < This.across; i++) {
-        This.list.graphics.lineStyle(0.5,0xFFFFFF,0.3);
+        This.list.graphics.lineStyle(0.5,16777215,0.3);
         This.list.graphics.moveTo(600/This.across*i,0);
         This.list.graphics.lineTo(600/This.across*i,600);
         This.list.graphics.moveTo(0,600/This.across*i);
@@ -103,7 +113,6 @@ export default {
       }
     }
     table();
-
     function aaa() {
       This.list.graphics.lineStyle(0.5,0x000000,1);
       let n = 5;
@@ -111,6 +120,7 @@ export default {
 
         This.data = [[300,0]];
       for (var i = 0; i < n; i++) {
+        // This.list.graphics.beginFill(0x66CCFF);
         let angle = (360 / n) * (i + 1) * Math.PI / 180;
         let actAngle = angle - Math.PI / 2;
         let x = Math.cos(actAngle) * 300 + 300;
@@ -119,23 +129,12 @@ export default {
         // console.log(x,y)
        This.list.graphics.lineTo(x,y);
        This.list.graphics.moveTo(x,y);
+        // This.list.graphics.endFill();
       }
-      // This.list.graphics.moveTo(150,1);
-      // This.list.graphics.lineTo(450,1);
-      // This.list.graphics.moveTo(450,0);
-      // This.list.graphics.lineTo(600,300);
-      // This.list.graphics.moveTo(600,300);
-      // This.list.graphics.lineTo(300,600);
-      // This.list.graphics.moveTo(300,600);
-      // This.list.graphics.lineTo(0,300);
-      // This.list.graphics.moveTo(0,300);
-      // This.list.graphics.lineTo(150,0);
-
     }
     this.list.app.stage.addChild(this.list.graphics)
     document.onkeydown = (event) => {
       this.direction = this.snake[1] - this.snake[0] == (this.n = [-1, -(This.across), 1, +(This.across)][(event).keyCode - 37] || this.direction) ? this.direction : this.n;
-      // this.direction = this.n[-1, -30, 1, 30][event.keyCode - 37] || this.direction
       if ((event).keyCode === 32) { 
         this.bool = !this.bool;
       } else if ((event).keyCode === 65) {
@@ -149,18 +148,43 @@ export default {
     }
     function random () {
       This.food = ~~(Math.random() * This.across * This.across)
-      // if(g) {
-      //     random()
-      //   } else {
-          return This.food;
-        // }
+          let size = 600/This.across;
+          let x = This.food%This.across * size + size/2;
+          let y = ~~(This.food/This.across) * size + size/2
+          for (var i = 0; i < This.data.length - 1; i++) {
+            let x1 = This.data[i][0];
+            let x2 = This.data[i+1][0];
+            let y1 = This.data[i][1];
+            let y2 = This.data[i+1][1];
+            let wire1 = Math.sqrt(Math.pow((x2-x1),2)+Math.pow((y2-y1),2))
+            let wire2 = Math.sqrt(Math.pow((x2-x),2)+Math.pow((y2-y),2))
+            let wire3 = Math.sqrt(Math.pow((x1-x),2)+Math.pow((y1-y),2))
+            let n = (x-x1)/(x2-x1) - (y-y1)/(y2-y1);
+            console.log(n)
+            if (
+              (i === 0 && n > 0) ||
+              (i === 1 && n < 0) ||
+              (i === 2 && n < 0) ||
+              (i === 3 && n > 0) ||
+              (i === 4 && n < 0) ||
+              Math.abs(wire1-(wire2+wire3)) < 0.5
+            )  {
+              This.a = 3;
+            } 
+          }
+          if (This.a === 3) {
+            This.a = 1;
+            random();
+          } else {
+            return This.a;
+          }
     }
     function begin () {
       This.snake= []
       This.direction= 1
       This.food= 410
       This.n= 0
-      This.list.graphics.beginFill(808080, 1 )
+      This.list.graphics.beginFill(16777215, 1 )
       This.list.graphics.drawRect(0, 0, 600, 600)
       // This.list.graphics.endFill()
       table();
@@ -177,17 +201,9 @@ export default {
         tiemr += This.speed;
         if (This.bool) {
           This.snake.unshift(This.n = This.snake[0] + This.direction);
-          // console.log(~~(This.n / This.across),(This.n % This.across))
           let size = 600/This.across;
           let x = This.n%This.across * size + size/2;
           let y = ~~(This.n/This.across) * size + size/2
-          console.log(This.data[3],This.data[4])
-          console.log('#####')
-          // console.log(Math.abs(((x - This.data[1][0])/(This.data[2][0] - This.data[1][0])) - ((y-This.data[1][1])/(This.data[2][1] - This.data[1][1]))))
-          // console.log(This.data[0][0],This.data[1][0],This.data[0][1],This.data[1][1],This.data)
-          // console.log(size,~~(This.n/This.across) * size + size/2,This.n%This.across * size + size/2)
-
-         
           for (var i = 0; i < This.data.length - 1; i++) {
             let x1 = This.data[i][0];
             let x2 = This.data[i+1][0];
@@ -196,17 +212,20 @@ export default {
             let wire1 = Math.sqrt(Math.pow((x2-x1),2)+Math.pow((y2-y1),2))
             let wire2 = Math.sqrt(Math.pow((x2-x),2)+Math.pow((y2-y),2))
             let wire3 = Math.sqrt(Math.pow((x1-x),2)+Math.pow((y1-y),2))
-            console.log(Math.abs(wire1-(wire2+wire3)))
-            if (Math.abs(wire1-(wire2+wire3)) < 0.6){
+            let n = (x-x1)/(x2-x1) - (y-y1)/(y2-y1);
+            // console.log(Math.abs(wire1-(wire2+wire3)))
+            if (Math.abs(wire1-(wire2+wire3)) < 0.5
+             ||
+         (i === 0 && n > 0) ||
+              (i === 1 && n < 0) ||
+              (i === 2 && n < 0) ||
+              (i === 3 && n > 0) ||
+              (i === 4 && n < 0) ){
               This.a = 2;
             }
-            // console.log(i,(((x - This.data[i][0])/(This.data[i+1][0] - This.data[i][0])) - ((y-This.data[i][1])/(This.data[i+1][1] - This.data[i][1]))))
-            // if (Math.abs(((x - This.data[i][0])/(This.data[i+1][0] - This.data[i][0])) - ((y-This.data[i][1])/(This.data[i+1][1] - This.data[i][1]))) < 0.03){
-            //   This.a = 2;
-            // }
           }
           if (This.snake.indexOf(This.n, 1) > 0 || This.n < 0 || This.n > This.across * This.across - 1|| This.direction == 1 && This.n % This.across == 0 || This.direction == -1 && This.n % This.across == This.across - 1 
-          || This.a == 2
+        || This.a == 2
           ) {
             
             console.log('撞死啦')
@@ -228,16 +247,13 @@ export default {
             while (This.snake.indexOf(random()) >= 0);//如果食物不在蛇的身体上
             draw(This.list.graphics, This.food, 0xFF700B)
           } else {
-            draw(This.list.graphics, This.snake.pop(), 808080);
+            draw(This.list.graphics, This.snake.pop(), 16777215);
           }
     // table();
     aaa()
-    // console.log(This.speed)
         }
       },This.speed)
     }
- 
-    
     // app.render(stage)
   }
 }
@@ -257,6 +273,16 @@ export default {
 } */
 #div {
   /* margin: 0 auto; */
+}
+#canvas {
+  /* position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        margin: auto;
+        z-index: 999999; */
+
 }
 /* #hello {
   height: 100%;

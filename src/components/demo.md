@@ -1,36 +1,15 @@
-||(~~(This.food / This.across) > 35)
-        ||(~~(This.food / This.across) === 1) && ((This.food % This.across) < 20 || (This.food % This.across) > 21)
-        ||(~~(This.food / This.across) === 2) && ((This.food % This.across) < 18 || (This.food % This.across) > 23)
-        ||(~~(This.food / This.across) === 3) && ((This.food % This.across) < 17 || (This.food % This.across) > 24)
-        ||(~~(This.food / This.across) === 4) && ((This.food % This.across) < 15 || (This.food % This.across) > 26)
-        ||(~~(This.food / This.across) === 5) && ((This.food % This.across) < 14 || (This.food % This.across) > 27)
-        ||(~~(This.food / This.across) === 6) && ((This.food % This.across) < 13 || (This.food % This.across) > 28)
-        ||(~~(This.food / This.across) === 7) && ((This.food % This.across) < 11 || (This.food % This.across) > 30)
-        ||(~~(This.food / This.across) === 8) && ((This.food % This.across) < 10 || (This.food % This.across) > 31)
-        ||(~~(This.food / This.across) === 9) && ((This.food % This.across) < 9 || (This.food % This.across) > 32)
-        ||(~~(This.food / This.across) === 10) && ((This.food % This.across) < 7 || (This.food % This.across) > 34)
-        ||(~~(This.food / This.across) === 11) && ((This.food % This.across) < 6 || (This.food % This.across) > 35)
-        ||(~~(This.food / This.across) === 12) && ((This.food % This.across) < 5 || (This.food % This.across) > 36)
-        ||(~~(This.food / This.across) === 13) && ((This.food % This.across) < 3|| (This.food % This.across) > 38)
-        ||(~~(This.food / This.across) === 14) && ((This.food % This.across) < 3 || (This.food % This.across) > 38)
-        ||(~~(This.food / This.across) === 15) && ((This.food % This.across) < 3|| (This.food % This.across) > 38)
-        ||(~~(This.food / This.across) === 16) && ((This.food % This.across) < 3 || (This.food % This.across) > 38)
-        ||(~~(This.food / This.across) === 17) && ((This.food % This.across) < 4 || (This.food % This.across) > 37)
-        ||(~~(This.food / This.across) === 18) && ((This.food % This.across) < 4 || (This.food % This.across) > 37)
-        ||(~~(This.food / This.across) === 19) && ((This.food % This.across) < 4 || (This.food % This.across) > 37)
-        ||(~~(This.food / This.across) === 20) && ((This.food % This.across) < 5 || (This.food % This.across) > 36)
-        ||(~~(This.food / This.across) === 21) && ((This.food % This.across) < 5 || (This.food % This.across) > 36)
-        ||(~~(This.food / This.across) === 22) && ((This.food % This.across) < 5|| (This.food % This.across) > 36)
-        ||(~~(This.food / This.across) === 23) && ((This.food % This.across) < 6 || (This.food % This.across) > 35)
-        ||(~~(This.food / This.across) === 24) && ((This.food % This.across) < 6 || (This.food % This.across) > 35)
-        ||(~~(This.food / This.across) === 25) && ((This.food % This.across) < 6 || (This.food % This.across) > 35)
-        ||(~~(This.food / This.across) === 26) && ((This.food % This.across) < 7 || (This.food % This.across) > 34)
-        ||(~~(This.food / This.across) === 27) && ((This.food % This.across) < 7 || (This.food % This.across) > 34)
-        ||(~~(This.food / This.across) === 28) && ((This.food % This.across) < 7 || (This.food % This.across) > 34)
-        ||(~~(This.food / This.across) === 29) && ((This.food % This.across) < 8 || (This.food % This.across) > 33)
-        ||(~~(This.food / This.across) === 30) && ((This.food % This.across) < 8 || (This.food % This.across) > 33)
-        ||(~~(This.food / This.across) === 31) && ((This.food % This.across) < 8 || (This.food % This.across) > 33)
-        ||(~~(This.food / This.across) === 32) && ((This.food % This.across) < 9 || (This.food % This.across) > 32)
-        ||(~~(This.food / This.across) === 33) && ((This.food % This.across) < 9 || (This.food % This.across) > 32)
-        ||(~~(This.food / This.across) === 34) && ((This.food % This.across) < 9 || (This.food % This.across) > 32)
-        ||(~~(This.food / This.across) === 35) && ((This.food % This.across) < 9 || (This.food % This.across) > 32)
+let size = 600/This.across;
+          let x = This.n%This.across * size + size/2;
+          let y = ~~(This.n/This.across) * size + size/2
+          for (var i = 0; i < This.data.length - 1; i++) {
+            let x1 = This.data[i][0];
+            let x2 = This.data[i+1][0];
+            let y1 = This.data[i][1];
+            let y2 = This.data[i+1][1];
+            let wire1 = Math.sqrt(Math.pow((x2-x1),2)+Math.pow((y2-y1),2))
+            let wire2 = Math.sqrt(Math.pow((x2-x),2)+Math.pow((y2-y),2))
+            let wire3 = Math.sqrt(Math.pow((x1-x),2)+Math.pow((y1-y),2))
+            console.log(Math.abs(wire1-(wire2+wire3)))
+            if (Math.abs(wire1-(wire2+wire3)) < 0.6){
+              This.a = 2;
+            }

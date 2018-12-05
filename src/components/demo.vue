@@ -22,7 +22,6 @@
   
   </div>
 
- <canvas id="canvas" width='600' height='600'></canvas>
 
   <div id="hello">
   </div>
@@ -58,21 +57,13 @@ export default {
   modules: {
   },
   mounted () {
-    var can = document.getElementById('canvas');
-    var cxt = can.getContext('2d');
-    // cxt.fillStyle="#FF0000";
-    // cxt.fillRect(0,0,600,600);
-    // cxt.save();
-    // cxt.beginPath();
-    // cxt.arc(300,300,300,0,Math.PI*2,true);
-    // cxt.clip()
-    // cxt.restore();
+    
      for (var i = 1; i < this.length; i++) {
       this.snake.push(this.num--);
     }
     var This = this;
     function draw (graphics, seat, color) {
-      graphics.lineStyle(0.5,0x000000,0);
+      graphics.lineStyle(1,16777215,1);
       graphics.beginFill(color, 1)
       graphics.drawRect(seat % This.across * (600/This.across) + 1, ~~(seat / This.across) * (600/This.across) + 1, (600/This.across) - 2, (600/This.across) - 2)
       // graphics.endFill();
@@ -89,7 +80,7 @@ export default {
     })
     this.list.app.renderer.backgroundColor = 16777215
     this.list.app.renderer.resize(600, 600)
-    this.list.app.view.style.border = '1px solid 16777215'
+    // this.list.app.view.style.border = '1px solid 16777215'
     this.list.app.renderer.view.style.position = 'absolute'
     this.list.app.renderer.view.style.display = 'block'
     this.list.app.renderer.view.style.left = 0
@@ -104,11 +95,11 @@ export default {
     this.list.graphics = new PIXI.Graphics()
     function table () {
       for(var i = 1; i < This.across; i++) {
-        This.list.graphics.lineStyle(0.5,16777215,0.3);
-        This.list.graphics.moveTo(600/This.across*i,0);
-        This.list.graphics.lineTo(600/This.across*i,600);
-        This.list.graphics.moveTo(0,600/This.across*i);
-        This.list.graphics.lineTo(600,600/This.across*i);
+        // This.list.graphics.lineStyle(0.5,16777215,0.3);
+        // This.list.graphics.moveTo(600/This.across*i,0);
+        // This.list.graphics.lineTo(600/This.across*i,600);
+        // This.list.graphics.moveTo(0,600/This.across*i);
+        // This.list.graphics.lineTo(600,600/This.across*i);
         aaa()
       }
     }
@@ -140,6 +131,9 @@ export default {
       } else if ((event).keyCode === 65) {
         if (this.coum) {
           this.bool = true;
+          if(this.across % 2 === 1) {
+            this.across = parseInt(this.across) + 1;
+          }
           begin();
         }
       }
@@ -150,24 +144,30 @@ export default {
       This.food = ~~(Math.random() * This.across * This.across)
           let size = 600/This.across;
           let x = This.food%This.across * size + size/2;
-          let y = ~~(This.food/This.across) * size + size/2
+          let y = ~~(This.food/This.across) * size + size/2;
+           if ((x - This.data[1][0])/(This.data[4][0] - This.data[1][0]) - (y - This.data[1][1])/(This.data[4][1] - This.data[1][1]) > 0) {
+              y = y - size/2;
+            } else {
+              y = y + size/2;
+              }
+            if ((x - 300)/(300 - 300) - (y - 0)/(600 - 0) > 0) {
+              x = x + size/2;
+            } else {
+              x = x - size/2;
+            }
           for (var i = 0; i < This.data.length - 1; i++) {
             let x1 = This.data[i][0];
             let x2 = This.data[i+1][0];
             let y1 = This.data[i][1];
             let y2 = This.data[i+1][1];
-            let wire1 = Math.sqrt(Math.pow((x2-x1),2)+Math.pow((y2-y1),2))
-            let wire2 = Math.sqrt(Math.pow((x2-x),2)+Math.pow((y2-y),2))
-            let wire3 = Math.sqrt(Math.pow((x1-x),2)+Math.pow((y1-y),2))
             let n = (x-x1)/(x2-x1) - (y-y1)/(y2-y1);
-            console.log(n)
+ 
             if (
               (i === 0 && n > 0) ||
               (i === 1 && n < 0) ||
               (i === 2 && n < 0) ||
               (i === 3 && n > 0) ||
-              (i === 4 && n < 0) ||
-              Math.abs(wire1-(wire2+wire3)) < 0.5
+              (i === 4 && n < 0) 
             )  {
               This.a = 3;
             } 
@@ -182,14 +182,15 @@ export default {
     function begin () {
       This.snake= []
       This.direction= 1
-      This.food= 410
+      This.food= This.across * This.across / 2 + This.across/2 + 2;
       This.n= 0
       This.list.graphics.beginFill(16777215, 1 )
+      This.list.graphics.lineStyle(1,16777215,1);
       This.list.graphics.drawRect(0, 0, 600, 600)
-      // This.list.graphics.endFill()
+      This.list.graphics.endFill()
       table();
       This.snake = [];
-      This.num = 408;
+      This.num = This.across * This.across / 2 + This.across/2;
        for (var i = 1; i < This.length; i++) {
           This.snake.push(This.num--);
         }
@@ -203,20 +204,31 @@ export default {
           This.snake.unshift(This.n = This.snake[0] + This.direction);
           let size = 600/This.across;
           let x = This.n%This.across * size + size/2;
-          let y = ~~(This.n/This.across) * size + size/2
+          let y = ~~(This.n/This.across) * size + size/2;
+          // console.log((x - This.data[1][0])/(This.data[4][0] - This.data[1][0]) - (y - This.data[1][1])/(This.data[4][1] - This.data[1][1]));
+            // console.log((x - 300)/(300 - 300) - (y - 0)/(600 - 0))
+          if ((x - This.data[1][0])/(This.data[4][0] - This.data[1][0]) - (y - This.data[1][1])/(This.data[4][1] - This.data[1][1]) > 0) {
+              y = y - size/2;
+            } else {
+              y = y + size/2;
+              }
+            if ((x - 300)/(300 - 300) - (y - 0)/(600 - 0) > 0) {
+              x = x + size/2;
+            } else {
+              x = x - size/2;
+            }
           for (var i = 0; i < This.data.length - 1; i++) {
             let x1 = This.data[i][0];
             let x2 = This.data[i+1][0];
             let y1 = This.data[i][1];
             let y2 = This.data[i+1][1];
-            let wire1 = Math.sqrt(Math.pow((x2-x1),2)+Math.pow((y2-y1),2))
-            let wire2 = Math.sqrt(Math.pow((x2-x),2)+Math.pow((y2-y),2))
-            let wire3 = Math.sqrt(Math.pow((x1-x),2)+Math.pow((y1-y),2))
+            // let wire1 = Math.sqrt(Math.pow((x2-x1),2)+Math.pow((y2-y1),2))
+            // let wire2 = Math.sqrt(Math.pow((x2-x),2)+Math.pow((y2-y),2))
+            // let wire3 = Math.sqrt(Math.pow((x1-x),2)+Math.pow((y1-y),2))
             let n = (x-x1)/(x2-x1) - (y-y1)/(y2-y1);
             // console.log(Math.abs(wire1-(wire2+wire3)))
-            if (Math.abs(wire1-(wire2+wire3)) < 0.5
-             ||
-         (i === 0 && n > 0) ||
+            if (
+              (i === 0 && n > 0) ||
               (i === 1 && n < 0) ||
               (i === 2 && n < 0) ||
               (i === 3 && n > 0) ||
